@@ -1,0 +1,857 @@
+
+{
+  "prompt": {
+    "meta": {
+      "name": "Zaza – Unified Development Prompt",
+      "version": "2.0",
+      "description": "A complete, machine-readable development brief and prompt for Zaza. Each section contains a 'description' field explaining what it is and why it exists, and a 'details' or equivalent field containing the actual spec. Hand this entire JSON to an AI coding assistant, engineering lead, or use it to bootstrap a project in Claude Code.",
+      "usage": "Pass this JSON as the system context or project brief to any AI coding assistant. All constraints must be resolved before implementation begins. All deliverables are required at handoff.",
+      "created": "2026-05-12",
+      "status": "Draft"
+    },
+
+    "role": {
+      "description": "The persona the AI or engineering team should adopt when interpreting this brief.",
+      "value": "Senior full-stack engineer and product architect building a production-ready SaaS application from scratch."
+    },
+
+    "product": {
+      "description": "Top-level identity and positioning for the product. This defines what Zaza is, who it is for, and what makes it distinct from existing tools like Jira, Asana, or Monday.com.",
+      "name": "Zaza",
+      "tagline": "Project management and revenue tracking — unified.",
+      "type": "Web-based multi-tenant SaaS platform",
+      "target_users": [
+        "Product and engineering teams who need Jira-level task management",
+        "Founders and project leads who need to track revenue and costs per project",
+        "Agencies managing multiple client projects with distinct budgets",
+        "Small to mid-size businesses that need one tool instead of Jira + a spreadsheet"
+      ],
+      "positioning": "Zaza combines the depth of Jira with native per-project revenue and budget tracking. Teams can plan, execute, and monitor their work alongside the financial impact of every project — in one lightweight, intuitive tool.",
+      "differentiators": {
+        "description": "Features that set Zaza apart from all direct competitors. These must be prominently surfaced in the UI and never cut from scope.",
+        "items": [
+          "Native revenue and budget tracking per project — no integrations needed",
+          "Built-in Gantt chart available to all plans",
+          "AI-powered task suggestions, workload balancing, and revenue forecasting",
+          "Time tracking built into every task with automatic billing rate calculation",
+          "Client portal for external stakeholders to view project progress without a Zaza account",
+          "Lightweight, opinionated UX — fast to learn, no configuration required to get started"
+        ]
+      }
+    },
+
+    "features": {
+      "description": "The complete feature set for Zaza. Every feature includes a description explaining what it does and why it matters, plus a details block with the full specification.",
+
+      "projects": {
+        "description": "A project is the top-level container in Zaza. Every task, budget, file, and conversation belongs to a project. Projects give teams a shared context for a unit of work — whether that is a product launch, a client engagement, or an internal initiative.",
+        "details": {
+          "fields": {
+            "name": "Short identifier displayed across all views",
+            "description": "Rich text field for project brief, goals, and context",
+            "status": "Active, On Hold, Completed, Archived",
+            "start_date": "Project kick-off date used in Gantt and reporting",
+            "end_date": "Target completion date; triggers overdue alerts when passed",
+            "owner": "Single user with full admin rights over the project",
+            "members": "List of users with assigned roles for this project",
+            "color": "User-selected accent color for visual identification in dashboards",
+            "tags": "Freeform labels for filtering and grouping across projects",
+            "cover_image": "Optional banner image shown on the project card"
+          },
+          "capabilities": {
+            "templates": "Save any project as a reusable template — tasks, workflows, custom fields, and budget categories are all preserved. New projects can be created from a template in one click.",
+            "versioning": "Track named versions or milestones within a project. Each version has a target date and a list of associated tasks.",
+            "release_tracking": "Mark tasks as part of a release. View release readiness as a percentage of completed tasks.",
+            "custom_fields": "Admins can define additional fields per project — text, number, date, dropdown, checkbox, or URL. Custom fields appear on task cards and are exportable.",
+            "project_health": "Auto-calculated health score based on overdue task rate, budget burn rate, and team activity. Displayed as a traffic-light indicator.",
+            "duplicate_project": "Clone an existing project including its structure, tasks, and settings — useful for repeating engagements.",
+            "archive_and_restore": "Archived projects are hidden from active views but fully searchable and restorable.",
+            "project_brief": "A dedicated rich-text document attached to each project for goals, stakeholder notes, and background context."
+          }
+        }
+      },
+
+      "tasks": {
+        "description": "Tasks are the core unit of work in Zaza. Every piece of work — from a one-line to-do to a multi-week engineering epic — is represented as a task. Tasks are flexible enough to model simple checklists or complex Jira-style issue hierarchies.",
+        "details": {
+          "fields": {
+            "title": "Short summary of the work to be done",
+            "description": "Rich text body with support for checklists, code blocks, images, and embeds",
+            "status": "Determined by the project workflow (e.g. Todo, In Progress, In Review, Done)",
+            "priority": "Low, Medium, High, or Urgent — affects sort order and alerting",
+            "assignees": "One or more users responsible for completing the task",
+            "reporter": "User who created the task — immutable after creation",
+            "due_date": "Target completion date; overdue tasks are flagged in dashboards",
+            "start_date": "When work on the task is expected to begin — used in Gantt",
+            "estimated_hours": "Planned effort in hours — used for workload and billing calculations",
+            "logged_hours": "Actual time spent — updated via the built-in time tracker",
+            "labels": "Colour-coded tags for cross-project categorisation (e.g. bug, feature, design)",
+            "attachments": "Files, images, and links uploaded directly to the task",
+            "cover_image": "Optional visual thumbnail shown on the Kanban card",
+            "story_points": "Effort estimate used in Scrum sprint planning",
+            "custom_fields": "Inherits any custom fields defined at project level"
+          },
+          "hierarchy": {
+            "description": "Zaza supports a four-level issue hierarchy to model work at any scale.",
+            "levels": {
+              "epic": "A large body of work spanning multiple sprints or weeks. Contains stories and tasks. Has its own start/end dates and progress indicator.",
+              "story": "A user-facing feature or requirement that fits within a sprint. Belongs to an epic. Contains tasks.",
+              "task": "A discrete unit of work. The primary object in Zaza. Can exist independently or under a story.",
+              "subtask": "A checklist-level item within a task. Has its own assignee and due date but no further nesting."
+            }
+          },
+          "capabilities": {
+            "dependencies": "Link tasks as blocking or blocked-by. Dependent tasks are visually flagged and cannot be moved to Done while a blocker is open.",
+            "bulk_actions": "Select multiple tasks and apply status changes, reassignment, priority updates, label changes, or deletion in one action.",
+            "automation_rules": "Define trigger → condition → action rules per project. Examples: when a task is moved to In Review, notify the project owner; when a due date passes, set priority to Urgent; when all subtasks are done, mark the parent task as Done.",
+            "recurring_tasks": "Tasks can be set to recur on a schedule — daily, weekly, monthly, or custom. A new task is auto-created on each cycle.",
+            "task_templates": "Save a task configuration as a template for reuse. Useful for recurring types like bug reports, onboarding checklists, or client request forms.",
+            "copy_task": "Duplicate any task including its subtasks, attachments, and custom field values.",
+            "move_task": "Move a task between projects while preserving its history and comments.",
+            "watch_task": "Users can subscribe to a task to receive notifications without being assigned to it.",
+            "task_relations": "Beyond dependencies, tasks can be marked as related to, duplicates of, or child of another task.",
+            "ai_task_suggestions": "Based on the project description and past tasks, Zaza's AI suggests new tasks that may have been missed.",
+            "time_tracker": "Start/stop timer built into every task. Logs sessions with timestamps. Total logged time is displayed on the task and rolled up to project level.",
+            "billing_rate": "Each user can have an hourly billing rate. Logged hours × billing rate = cost per task, rolled up per project."
+          }
+        }
+      },
+
+      "boards_and_views": {
+        "description": "Zaza provides multiple ways to visualise and interact with tasks. Different views suit different working styles — Kanban for flow, Scrum for sprints, Gantt for timelines, List for density, and Calendar for deadline awareness.",
+        "details": {
+          "kanban_board": {
+            "description": "A column-based drag-and-drop board where each column represents a workflow state. The primary view for teams using a continuous flow model.",
+            "features": [
+              "Drag tasks between columns to update their status",
+              "Configurable column order and WIP limits per column",
+              "Swimlanes: group tasks by assignee, priority, or label",
+              "Card customisation: show or hide fields like due date, priority, assignee avatar",
+              "Quick-add task from any column",
+              "Filter by assignee, priority, label, due date, or custom field",
+              "Collapse columns to focus on active work"
+            ]
+          },
+          "scrum_board": {
+            "description": "A sprint-based board for Agile teams. Supports the full Scrum workflow from backlog grooming to sprint review.",
+            "features": [
+              "Create and manage sprints with a start date, end date, and sprint goal",
+              "Backlog view: prioritise and estimate tasks before pulling into a sprint",
+              "Active sprint board: same drag-and-drop interface as Kanban but scoped to the sprint",
+              "Velocity chart: tracks story points completed per sprint over time",
+              "Burndown chart: shows remaining work vs ideal burn rate within the active sprint",
+              "Sprint retrospective notes attached to each completed sprint"
+            ]
+          },
+          "gantt_chart": {
+            "description": "An interactive timeline view for planning and tracking tasks across time. Built into Zaza for all plans — not a paid add-on.",
+            "features": [
+              "Horizontal bars representing each task's start and end dates",
+              "Drag bars left/right to shift dates; drag edges to resize duration",
+              "Dependency lines showing blocking relationships between tasks",
+              "Milestone markers for key project dates",
+              "Zoom levels: day, week, month, quarter",
+              "Colour-code bars by assignee, priority, or label",
+              "Critical path highlighting",
+              "Baseline comparison: compare current plan against original baseline",
+              "Export Gantt as PNG or PDF"
+            ]
+          },
+          "list_view": {
+            "description": "A dense, spreadsheet-like view of all tasks in a project. Best for bulk editing, sorting, and scanning large task sets.",
+            "features": [
+              "Sortable and filterable columns",
+              "Inline editing of all task fields",
+              "Group by status, assignee, priority, label, or custom field",
+              "Column visibility toggle",
+              "Bulk select and action from list"
+            ]
+          },
+          "calendar_view": {
+            "description": "A monthly or weekly calendar showing tasks by due date. Useful for deadline management and capacity planning.",
+            "features": [
+              "Tasks appear on their due date",
+              "Drag tasks between days to change due dates",
+              "Filter by assignee to view individual workloads",
+              "Toggle between month, week, and day views"
+            ]
+          },
+          "workload_view": {
+            "description": "A heatmap showing how many tasks and hours are assigned to each team member across a time period. Used to identify over- and under-allocation.",
+            "features": [
+              "Rows per team member, columns per day or week",
+              "Cell colour intensity based on task count or logged/estimated hours",
+              "Click a cell to see the tasks assigned on that day",
+              "Drag tasks from one user to another to rebalance workload",
+              "AI workload balancing: suggest redistribution when a member is overloaded"
+            ]
+          },
+          "custom_workflows": {
+            "description": "Admins can define the workflow states for each project rather than being locked into a fixed set. This allows Zaza to model any team process.",
+            "features": [
+              "Add, rename, reorder, and delete workflow states",
+              "Mark states as start states, in-progress states, or done states",
+              "Set transition rules: which states a task can move to from each state",
+              "Per-state automation triggers"
+            ]
+          }
+        }
+      },
+
+      "collaboration": {
+        "description": "Collaboration features keep teams aligned on tasks without needing external tools like Slack or email for task-level communication.",
+        "details": {
+          "comments": {
+            "description": "Threaded discussions attached to individual tasks. Keeps all context about a piece of work in one place.",
+            "features": [
+              "Rich text comments with formatting, code blocks, and image embeds",
+              "@mention users to notify them and link them to the comment",
+              "React to comments with emoji",
+              "Edit and delete own comments",
+              "Pin important comments to the top of the thread",
+              "Quote and reply to specific comments"
+            ]
+          },
+          "file_attachments": {
+            "description": "Files uploaded directly to tasks so relevant assets stay attached to the work they relate to.",
+            "max_size_mb": 50,
+            "accepted_types": ["pdf", "png", "jpg", "jpeg", "gif", "mp4", "docx", "xlsx", "pptx", "zip", "csv", "svg"],
+            "features": [
+              "Drag-and-drop upload on task detail view",
+              "Image preview inline in task",
+              "Version history: re-upload a file to create a new version while preserving the old",
+              "Storage usage tracked per organisation"
+            ]
+          },
+          "notifications": {
+            "description": "Keeps users informed of relevant activity without overwhelming them. Users control their own notification preferences.",
+            "channels": ["In-app notification bell", "Email digest (immediate or daily summary)", "Slack (if integration enabled)"],
+            "triggers": [
+              "Task assigned to you",
+              "Task you are watching updated",
+              "Comment posted on a task you are watching or assigned to",
+              "@mentioned in a comment",
+              "Task status changed",
+              "Task due date passed (overdue alert)",
+              "Task due date approaching (configurable: 1 day, 3 days, 1 week before)",
+              "Sprint started or completed",
+              "New member added to a project",
+              "Budget threshold reached (e.g. 80% of budget spent)"
+            ],
+            "preferences": "Each user can enable or disable each trigger per channel in their notification settings."
+          },
+          "mentions_and_links": {
+            "description": "Users can reference other users, tasks, projects, and external URLs anywhere in the app using @ and # syntax.",
+            "features": [
+              "@user — mentions a user and sends them a notification",
+              "#task-id — creates a clickable link to another task",
+              "#project-name — links to a project overview",
+              "URL unfurling: pasted URLs show a preview card if the domain supports Open Graph"
+            ]
+          },
+          "audit_log": {
+            "description": "An immutable, tamper-proof record of every action taken in Zaza. Required for enterprise compliance and debugging unexpected changes.",
+            "tracked_events": [
+              "Task created, updated, moved, deleted, or restored",
+              "Comment posted, edited, or deleted",
+              "File uploaded or deleted",
+              "Project settings changed",
+              "Role assigned or revoked",
+              "User invited or removed",
+              "Workflow states modified",
+              "Automation rules created or changed",
+              "Budget entries added or edited",
+              "API token created or revoked"
+            ],
+            "features": [
+              "Filterable by user, project, event type, and date range",
+              "Exportable as CSV",
+              "Retained for minimum 12 months"
+            ]
+          },
+          "client_portal": {
+            "description": "A read-only or limited-interaction view of a project that can be shared with external clients or stakeholders who do not have a Zaza account.",
+            "features": [
+              "Generate a shareable link per project",
+              "Toggle visibility: show only specific views (Gantt, status summary, revenue report)",
+              "Optional password protection",
+              "Client can leave comments on tasks if comment access is enabled",
+              "Client cannot see internal notes or cost data unless explicitly shared",
+              "Custom branding: show client's logo on the portal"
+            ]
+          },
+          "activity_feed": {
+            "description": "A chronological stream of all activity on a project or task, giving anyone joining mid-flight a full history.",
+            "features": [
+              "Project-level feed showing all task events, comments, and file uploads",
+              "Task-level feed showing the complete history of that specific task",
+              "Filter feed by event type"
+            ]
+          }
+        }
+      },
+
+      "revenue_and_budget_tracking": {
+        "description": "The defining differentiator of Zaza. Every project has a built-in financial ledger so teams can see the business impact of their work without switching to a spreadsheet or accounting tool.",
+        "details": {
+          "revenue_entries": {
+            "description": "Income associated with a project — invoices paid, milestone payments, retainer fees, etc.",
+            "fields": ["label", "amount", "currency", "date", "category", "notes", "status (expected / received)"]
+          },
+          "expense_entries": {
+            "description": "Costs incurred on a project — contractor fees, software licences, hosting, travel, etc.",
+            "fields": ["label", "amount", "currency", "date", "category", "notes", "status (planned / paid)", "receipt_attachment"]
+          },
+          "profit_loss": {
+            "description": "Automatically calculated from revenue minus expenses. Displayed per project and aggregated across all projects in the revenue dashboard.",
+            "breakdown": ["Gross revenue", "Total expenses by category", "Net profit or loss", "Margin percentage"]
+          },
+          "budget": {
+            "description": "A project can have a defined budget. Zaza tracks spend against it and alerts the team when thresholds are crossed.",
+            "features": [
+              "Set a total budget per project",
+              "Set budgets per expense category",
+              "Visual burn gauge on project dashboard",
+              "Alert at 50%, 80%, and 100% of budget consumed",
+              "Separate budget for internal costs vs billable costs"
+            ]
+          },
+          "time_based_billing": {
+            "description": "Connect time tracking to revenue. Each user's logged hours are multiplied by their billing rate to calculate billable cost per task and per project.",
+            "features": [
+              "Set a default billing rate per user (per organisation)",
+              "Override billing rate per project",
+              "View billable vs non-billable hours per project",
+              "Generate a billing summary: hours × rate = invoice amount"
+            ]
+          },
+          "forecast_vs_actual": {
+            "description": "Compare what was planned financially against what actually happened, month by month.",
+            "features": [
+              "Input planned monthly revenue and expenses at project start",
+              "Actuals pulled from revenue and expense entries as they are logged",
+              "Side-by-side bar chart: forecast vs actual per month",
+              "Variance calculated and highlighted"
+            ]
+          },
+          "forecasting": {
+            "description": "Multi-month forward-looking projections based on current data and growth assumptions. Helps leadership plan ahead.",
+            "features": [
+              "Three scenarios: optimistic, base, pessimistic",
+              "Set growth rate assumptions per scenario",
+              "Projected revenue, expenses, and profit for up to 24 months",
+              "Confidence interval displayed on charts"
+            ]
+          },
+          "currency_support": {
+            "description": "Teams working across markets need to log revenue and expenses in different currencies.",
+            "features": [
+              "Per-entry currency selection",
+              "Automatic conversion to the organisation's base currency using live exchange rates",
+              "Display amounts in both original and base currency"
+            ]
+          },
+          "invoicing": {
+            "description": "Generate simple invoices directly from Zaza based on logged time or fixed amounts.",
+            "features": [
+              "Create an invoice from a billing summary",
+              "Add organisation logo, address, and payment terms",
+              "Export as PDF",
+              "Mark invoices as sent, viewed, or paid",
+              "Invoice history per project"
+            ]
+          },
+          "export": {
+            "description": "All financial data can be extracted for use in accounting tools, spreadsheets, or client reporting.",
+            "formats": ["CSV", "PDF"],
+            "scope": ["Per-project revenue and expense ledger", "Profit/loss summary", "Forecast vs actual report", "Billing summary", "Cross-project financial overview"]
+          }
+        }
+      },
+
+      "dashboards_and_reporting": {
+        "description": "Dashboards give individuals and leadership a real-time overview of what is happening across projects, teams, and finances. Reports provide historical data for retrospectives and planning.",
+        "details": {
+          "project_dashboard": {
+            "description": "The home view for a project. Gives the team a single-glance summary of where things stand.",
+            "widgets": [
+              "Task completion ring: % of tasks done vs total",
+              "Overdue tasks counter with a link to filter view",
+              "Team workload summary: tasks per assignee",
+              "Recent activity feed",
+              "Budget burn gauge",
+              "Upcoming deadlines (next 7 days)",
+              "Blocked tasks counter"
+            ]
+          },
+          "organisation_dashboard": {
+            "description": "A cross-project view for admins and managers. Shows the health of all active projects in one place.",
+            "widgets": [
+              "Project health traffic lights across all active projects",
+              "Total tasks overdue across the organisation",
+              "Team utilisation heatmap",
+              "Revenue and profit summary across all projects",
+              "Projects at budget risk (>80% spend)"
+            ]
+          },
+          "revenue_dashboard": {
+            "description": "A dedicated financial overview for project leads, finance teams, and founders.",
+            "widgets": [
+              "Total revenue received this month and year to date",
+              "Total expenses this month and year to date",
+              "Net profit this month and year to date",
+              "Revenue by project (stacked bar chart)",
+              "Expense breakdown by category (pie chart)",
+              "Forecast vs actual trend line",
+              "Top 5 projects by revenue",
+              "Top 5 projects by cost"
+            ]
+          },
+          "custom_dashboards": {
+            "description": "Users can build their own dashboard by selecting and arranging widgets. Useful for different roles who need different information.",
+            "features": [
+              "Drag-and-drop widget grid",
+              "Widget library: choose from all available project and revenue widgets",
+              "Save multiple named dashboards",
+              "Share a dashboard with specific team members",
+              "Set a dashboard as the default home screen"
+            ]
+          },
+          "reports": {
+            "velocity_chart": "Story points completed per sprint over time. Shows team throughput and consistency.",
+            "burndown_chart": "Remaining work in a sprint or project vs ideal burn rate. Highlights whether the team is on track.",
+            "cumulative_flow": "Tasks moving through each workflow state over time. Reveals bottlenecks where tasks are piling up.",
+            "time_tracking_report": "Total hours logged per user, per task, and per project. Filterable by date range.",
+            "revenue_analysis": "Revenue, expense, and profit trends over custom date ranges with comparison to prior periods.",
+            "task_completion_rate": "Percentage of tasks completed on time vs overdue, per user and per project.",
+            "cycle_time_report": "Average time from task creation to task completion. Useful for identifying slow-moving work."
+          },
+          "export": {
+            "description": "Every report and dashboard can be exported for sharing with stakeholders who do not use Zaza.",
+            "formats": ["CSV", "PDF", "PNG (charts only)"]
+          }
+        }
+      },
+
+      "ai_features": {
+        "description": "Zaza includes an embedded AI layer that helps teams work faster, make better decisions, and reduce manual overhead. AI features are opt-in and clearly labelled in the UI.",
+        "details": {
+          "task_suggestions": {
+            "description": "Based on the project description, existing tasks, and past projects, the AI suggests tasks that may have been overlooked.",
+            "trigger": "Available when creating a new project or on demand from the project backlog."
+          },
+          "task_write_assist": {
+            "description": "AI helps users write better task descriptions. Given a short title, it expands it into a structured description with acceptance criteria.",
+            "trigger": "Appears as a button inside the task description field."
+          },
+          "workload_balancing": {
+            "description": "Analyses the current task distribution across team members and suggests reassignments to balance workload more evenly.",
+            "trigger": "Available from the workload view."
+          },
+          "revenue_forecasting": {
+            "description": "Uses historical revenue and expense patterns to generate AI-powered financial forecasts, separate from the manual scenario modelling.",
+            "trigger": "Available in the revenue dashboard."
+          },
+          "risk_detection": {
+            "description": "Flags projects that show early warning signs of going over budget, missing deadlines, or having blocked critical-path tasks.",
+            "trigger": "Runs automatically and surfaces alerts in the organisation dashboard."
+          },
+          "meeting_notes_to_tasks": {
+            "description": "Paste in meeting notes or a transcript and the AI extracts action items as draft tasks, ready for review and assignment.",
+            "trigger": "Available from the project page as 'Import from notes'."
+          },
+          "smart_search": {
+            "description": "Natural language search across all tasks, comments, and files. Ask questions like 'What tasks is Sarah blocked on?' or 'Show me all overdue tasks in the marketing project.'",
+            "trigger": "Global search bar."
+          }
+        }
+      },
+
+      "time_tracking": {
+        "description": "Built-in time tracking on every task eliminates the need for a separate tool like Toggl or Harvest. Time data feeds directly into billing calculations and reports.",
+        "details": {
+          "timer": "Start and stop a timer on any task. The session is automatically logged with a timestamp when stopped.",
+          "manual_entry": "Log time manually with a date, duration, and optional note.",
+          "sessions": "Multiple sessions can be logged per task. Each session shows start time, end time, and duration.",
+          "total_display": "Total logged time shown prominently on the task card and detail view.",
+          "billable_flag": "Each log entry can be marked as billable or non-billable.",
+          "project_rollup": "Total hours per project rolled up from all task sessions, broken down by user.",
+          "export": "Export time logs as CSV for payroll, invoicing, or external reporting."
+        }
+      },
+
+      "roles_and_permissions": {
+        "description": "Zaza uses a role-based access control system. Permissions are enforced at the API level so they cannot be bypassed by manipulating the UI.",
+        "details": {
+          "roles": {
+            "Admin": "Full access to all projects, settings, billing, and user management across the organisation.",
+            "Manager": "Can create and manage projects, invite members, configure workflows, and view financial data for their projects.",
+            "Contributor": "Can create and update tasks, log time, leave comments, and upload files within assigned projects.",
+            "Viewer": "Read-only access to assigned projects. Cannot create, edit, or delete any content.",
+            "Guest": "External user with access only to the client portal or specific shared tasks. No internal access."
+          },
+          "project_level_roles": "A user can have different roles on different projects. For example, a user might be a Manager on one project and a Contributor on another.",
+          "custom_roles": "Admins can define custom roles with a specific combination of permissions for advanced enterprise configurations.",
+          "permission_matrix": {
+            "create_project": ["Admin", "Manager"],
+            "delete_project": ["Admin"],
+            "invite_members": ["Admin", "Manager"],
+            "manage_billing": ["Admin"],
+            "view_revenue_data": ["Admin", "Manager"],
+            "create_tasks": ["Admin", "Manager", "Contributor"],
+            "delete_tasks": ["Admin", "Manager"],
+            "log_time": ["Admin", "Manager", "Contributor"],
+            "view_audit_log": ["Admin"],
+            "configure_workflows": ["Admin", "Manager"],
+            "manage_automation": ["Admin", "Manager"]
+          }
+        }
+      },
+
+      "security_and_authentication": {
+        "description": "Zaza is built with security as a foundational requirement, not an afterthought. Authentication, data protection, and access control are all implemented to enterprise standards.",
+        "details": {
+          "authentication": {
+            "email_password": "bcrypt hashing with a minimum cost factor of 12. JWT access tokens (15-minute expiry) and refresh tokens (30-day expiry, rotated on use).",
+            "sso": "SAML 2.0 and OIDC support for enterprise single sign-on. Compatible with Okta, Azure AD, Google Workspace, and any compliant IdP.",
+            "two_factor_auth": "TOTP-based 2FA compatible with Google Authenticator, Authy, and 1Password. Backup codes generated at setup.",
+            "magic_link": "Passwordless login via a one-time link sent to the user's email.",
+            "session_management": "Users can view and revoke all active sessions from their account settings."
+          },
+          "data_security": {
+            "encryption_at_rest": "AES-256 encryption for all database fields and file storage.",
+            "encryption_in_transit": "TLS 1.3 enforced on all connections. HSTS header set.",
+            "secrets_management": "All secrets and API keys stored in environment variables or a secrets manager (e.g. AWS Secrets Manager). Never hardcoded.",
+            "database_backups": "Automated daily backups with point-in-time recovery. Retained for 30 days."
+          },
+          "rate_limiting": {
+            "auth_endpoints": "Maximum 10 failed login attempts per IP per hour before temporary lockout.",
+            "api_endpoints": "Rate limits applied per API token. Default: 1000 requests per hour. Configurable per plan."
+          },
+          "vulnerability_management": {
+            "dependency_scanning": "Automated scanning of dependencies for known CVEs on every deployment.",
+            "penetration_testing": "Annual third-party penetration test.",
+            "responsible_disclosure": "Public security disclosure policy and dedicated security@zaza.app contact."
+          },
+          "compliance": {
+            "gdpr": "Data residency options, right-to-erasure tooling, data processing agreements, and cookie consent.",
+            "soc2": "Controls mapped to SOC 2 Type II requirements. Audit log and access controls support this.",
+            "hipaa": "Available as an add-on for healthcare customers. Requires signed BAA."
+          }
+        }
+      },
+
+      "integrations_and_api": {
+        "description": "Zaza connects to the tools teams already use and exposes a full API so it can be embedded in any workflow.",
+        "details": {
+          "slack": {
+            "description": "Send Zaza notifications to Slack channels without leaving Slack.",
+            "features": [
+              "Connect one or more Slack channels to a Zaza project",
+              "Choose which event types to pipe to Slack (task created, overdue, comment, etc.)",
+              "Use /zaza commands in Slack to create tasks or check project status",
+              "Receive daily digest of overdue tasks in a Slack channel"
+            ]
+          },
+          "github": {
+            "description": "Link code changes directly to tasks so the full context of a piece of work is in one place.",
+            "features": [
+              "Link a pull request or commit to a task by referencing the task ID in the PR description",
+              "PR status (open, merged, closed) shown on the linked task",
+              "Automatically move a task to In Review when a PR is opened",
+              "Automatically move a task to Done when a PR is merged"
+            ]
+          },
+          "google_calendar": {
+            "description": "Sync Zaza deadlines with Google Calendar so task due dates appear alongside meetings.",
+            "features": [
+              "OAuth 2.0 connection — no passwords shared",
+              "Task due dates synced as all-day events",
+              "Sprint start and end dates synced as events",
+              "Changes in Zaza reflected in Google Calendar within minutes"
+            ]
+          },
+          "google_drive": {
+            "description": "Attach Google Drive files directly to tasks without downloading and re-uploading.",
+            "features": [
+              "Browse and attach Drive files from inside a task",
+              "Attached files display the current Drive file name and last modified date",
+              "Click to open in Drive directly from the task"
+            ]
+          },
+          "zapier": {
+            "description": "Connect Zaza to 5000+ apps via Zapier for teams who need custom integrations without writing code.",
+            "triggers": ["Task created", "Task status changed", "Task overdue", "Comment posted", "Budget threshold reached"],
+            "actions": ["Create task", "Update task status", "Add comment", "Add revenue entry"]
+          },
+          "webhooks": {
+            "description": "Send real-time event data to any external URL when something happens in Zaza. Used for custom integrations and internal tooling.",
+            "features": [
+              "Configure per-project or organisation-wide webhooks",
+              "Select which event types trigger the webhook",
+              "HMAC signature on all payloads for verification",
+              "Delivery log with retry on failure"
+            ]
+          },
+          "rest_api": {
+            "description": "A full public REST API for programmatic access to all Zaza data. Used for internal integrations, data pipelines, and building on top of Zaza.",
+            "base_url": "/api/v1/",
+            "auth": "Bearer token (API keys generated per user or service account)",
+            "rate_limited": true,
+            "response_format": "JSON with consistent envelope: { data, error, meta }",
+            "pagination": "Cursor-based on all list endpoints",
+            "documentation": "OpenAPI 3.0 spec published at /api/docs",
+            "endpoints_include": [
+              "organisations", "users", "projects", "tasks", "subtasks",
+              "comments", "attachments", "time_logs", "revenue_entries",
+              "expense_entries", "notifications", "webhooks", "audit_logs"
+            ],
+            "versioning": "Major version in URL path (/v1/). Backwards-compatible changes within a version. Breaking changes introduce a new version."
+          }
+        }
+      },
+
+      "notifications_and_email": {
+        "description": "Zaza keeps users informed through in-app and email channels with fine-grained control over what they receive.",
+        "details": {
+          "in_app": "Notification bell in the top navigation. Badge count for unread. Clicking a notification navigates directly to the relevant task or project.",
+          "email": "Transactional emails for high-priority events. Optional daily digest for lower-priority activity. Unsubscribe per notification type from account settings.",
+          "digest": "Daily or weekly email digest summarising overdue tasks, upcoming deadlines, and new comments. Configurable per user.",
+          "do_not_disturb": "Users can set DND hours. No email or push notifications sent during this window.",
+          "push_notifications": "Browser push notifications for users who opt in. Covers the same trigger set as in-app notifications."
+        }
+      },
+
+      "search": {
+        "description": "Global search across all projects, tasks, comments, and files. Fast and accurate with support for natural language queries via AI.",
+        "details": {
+          "full_text_search": "Indexes task titles, descriptions, comments, and file names. Results ranked by relevance and recency.",
+          "filters": "Narrow results by project, assignee, status, date range, or content type.",
+          "ai_search": "Natural language queries understood and translated into structured filters. Example: 'Tasks assigned to me that are overdue in the marketing project'.",
+          "recent_items": "Quick access panel showing recently viewed tasks and projects.",
+          "keyboard_shortcut": "Cmd+K / Ctrl+K opens global search from anywhere in the app."
+        }
+      },
+
+      "mobile": {
+        "description": "Zaza is desktop-first but must be fully functional on tablet and usable on mobile. A native mobile app is a future consideration but not in this scope.",
+        "details": {
+          "responsive_web": "The web app adapts to screen sizes from 375px (mobile) upward using responsive CSS.",
+          "mobile_priority_views": ["Task detail (view and comment)", "My tasks list", "Notifications", "Project status summary"],
+          "touch_interactions": "Drag-and-drop on Kanban works on touch devices using touch events."
+        }
+      }
+    },
+
+    "tech_stack": {
+      "description": "The chosen technology stack for building Zaza. Decisions should be locked in before development begins. Alternatives are noted where the choice is not yet final.",
+      "frontend": {
+        "framework": "React.js 18+",
+        "styling": "Tailwind CSS",
+        "state_management": "Zustand or Redux Toolkit",
+        "drag_and_drop": "React DnD or dnd-kit",
+        "rich_text_editor": "Tiptap (ProseMirror-based)",
+        "charts": "Recharts or Chart.js",
+        "gantt": "Frappe Gantt (open source) or DHTMLX Gantt (licensed — evaluate early)",
+        "forms": "React Hook Form + Zod validation",
+        "date_handling": "date-fns",
+        "api_client": "TanStack Query (React Query) for data fetching and caching",
+        "testing": "Vitest + React Testing Library"
+      },
+      "backend": {
+        "runtime": "Node.js 20 LTS",
+        "framework": "Express.js",
+        "alternative": "Django 4.x (Python) — choose based on team expertise before sprint 1",
+        "orm": "Prisma (Node.js) or Django ORM",
+        "job_queue": "Bull (Node.js) or Celery (Django) for background jobs and automation rules",
+        "email": "Resend or SendGrid for transactional email",
+        "testing": "Jest + Supertest"
+      },
+      "database": {
+        "primary": "PostgreSQL 15+",
+        "note": "Relational schema is required given the hierarchical task model, financial ledger, and audit log. MongoDB is not recommended.",
+        "caching": "Redis — for session storage, rate limiting, job queues, and API response caching",
+        "search": "PostgreSQL full-text search for MVP; migrate to Elasticsearch or Typesense at scale"
+      },
+      "file_storage": {
+        "provider": "AWS S3",
+        "cdn": "CloudFront for serving attachments and static assets",
+        "note": "All file uploads go through the backend — never directly from the client to S3"
+      },
+      "ai": {
+        "provider": "Anthropic Claude API (claude-sonnet-4-20250514)",
+        "usage": "Task suggestions, write assist, workload balancing recommendations, smart search, meeting notes to tasks"
+      },
+      "auth": {
+        "session_tokens": "JWT (jsonwebtoken library)",
+        "password_hashing": "bcrypt (cost factor 12)",
+        "sso": "passport-saml for SAML 2.0; openid-client for OIDC",
+        "two_factor": "otplib for TOTP generation and verification"
+      },
+      "infrastructure": {
+        "hosting": "AWS (EC2 or ECS for backend; S3 + CloudFront for frontend) or Vercel (frontend) + Railway (backend)",
+        "alternative": "DigitalOcean App Platform",
+        "containerisation": "Docker + Docker Compose for local development",
+        "ci_cd": "GitHub Actions — run tests, lint, and deploy on merge to main",
+        "monitoring": "Sentry for error tracking; Datadog or CloudWatch for infrastructure metrics",
+        "logging": "Structured JSON logs; shipped to CloudWatch or Datadog"
+      }
+    },
+
+    "data_model": {
+      "description": "The core PostgreSQL schema for Zaza. Every table is listed with its purpose. Relationships and constraints must be enforced at the database level, not just the application level.",
+      "database": "PostgreSQL 15+",
+      "tables": {
+        "organisations": "Top-level tenant. All data is scoped to an organisation. Fields: id, name, slug, plan, base_currency, logo_url, created_at.",
+        "users": "A person who can log in to Zaza. Fields: id, org_id, email, password_hash, name, avatar_url, billing_rate, timezone, role, totp_secret, created_at.",
+        "projects": "A container for related work. Fields: id, org_id, name, description, status, start_date, end_date, owner_id, color, template_id, budget, created_at, deleted_at.",
+        "project_members": "Join table linking users to projects with a role. Fields: project_id, user_id, role.",
+        "workflows": "Custom workflow definitions per project. Fields: id, project_id, name.",
+        "workflow_states": "Individual states within a workflow. Fields: id, workflow_id, name, type (start/in_progress/done), position.",
+        "tasks": "The core unit of work. Fields: id, project_id, workflow_state_id, parent_id (self-ref for subtasks), epic_id, story_id, title, description, priority, assignee_ids, reporter_id, due_date, start_date, estimated_hours, story_points, created_at, deleted_at.",
+        "task_dependencies": "Blocking relationships between tasks. Fields: task_id, blocks_task_id.",
+        "task_labels": "Many-to-many between tasks and labels. Fields: task_id, label_id.",
+        "labels": "Colour-coded tags. Fields: id, org_id, name, color.",
+        "comments": "Threaded comments on tasks. Fields: id, task_id, user_id, body, parent_id (for threads), created_at, edited_at.",
+        "attachments": "Files uploaded to tasks. Fields: id, task_id, user_id, filename, s3_key, size_bytes, mime_type, version, created_at.",
+        "time_logs": "Individual time tracking sessions on tasks. Fields: id, task_id, user_id, started_at, ended_at, duration_minutes, notes, billable.",
+        "sprints": "Time-boxed iterations for Scrum. Fields: id, project_id, name, goal, start_date, end_date, status.",
+        "sprint_tasks": "Join table linking tasks to sprints. Fields: sprint_id, task_id.",
+        "revenue_entries": "Income records per project. Fields: id, project_id, label, amount, currency, date, category, status, notes.",
+        "expense_entries": "Cost records per project. Fields: id, project_id, label, amount, currency, date, category, status, receipt_attachment_id, notes.",
+        "budgets": "Budget configuration per project. Fields: id, project_id, total_amount, currency.",
+        "notifications": "In-app notification records. Fields: id, user_id, type, payload (JSONB), read_at, created_at.",
+        "audit_logs": "Immutable event log. Fields: id, org_id, user_id, event_type, entity_type, entity_id, before (JSONB), after (JSONB), ip_address, created_at.",
+        "api_tokens": "API keys for programmatic access. Fields: id, user_id, name, token_hash, last_used_at, created_at, expires_at.",
+        "webhooks": "Configured webhook endpoints. Fields: id, org_id, url, secret, events (array), active.",
+        "custom_fields": "Field definitions per project. Fields: id, project_id, name, type, options (JSONB).",
+        "custom_field_values": "Values for custom fields on tasks. Fields: task_id, field_id, value.",
+        "automation_rules": "Trigger-action rules per project. Fields: id, project_id, name, trigger (JSONB), conditions (JSONB), actions (JSONB), active."
+      },
+      "conventions": [
+        "All primary keys are UUIDs",
+        "All timestamps stored in UTC as timestamptz",
+        "Soft deletes via deleted_at column on projects and tasks",
+        "All monetary amounts stored as integers in the smallest currency unit (e.g. cents)",
+        "JSONB used for flexible payload fields (automation rules, audit log before/after, notification payloads)",
+        "Row-level security policies enforce org-level data isolation",
+        "Indexes on all foreign keys and frequently filtered columns"
+      ]
+    },
+
+    "api_design": {
+      "description": "Design guidelines for the Zaza REST API. All endpoints must follow these conventions for consistency and predictability.",
+      "base_url": "/api/v1/",
+      "response_envelope": {
+        "success": "{ data: <payload>, meta: { pagination? } }",
+        "error": "{ error: { code, message, details? } }"
+      },
+      "conventions": [
+        "Use plural nouns for resource names: /tasks not /task",
+        "Use HTTP verbs correctly: GET (read), POST (create), PUT (full replace), PATCH (partial update), DELETE (remove)",
+        "Cursor-based pagination on all list endpoints using ?cursor= and ?limit= query params",
+        "Filter list endpoints with query params: ?status=, ?assignee_id=, ?project_id=, ?label_id=",
+        "Return 201 on resource creation with the created resource in the response body",
+        "Return 204 on deletion with an empty body",
+        "Validate all inputs and return 422 with field-level error details on validation failure",
+        "Return 401 for missing or invalid auth, 403 for insufficient permissions, 404 for missing resources",
+        "Include a request ID header (X-Request-Id) on all responses for debugging"
+      ],
+      "auth": "Bearer token in Authorization header. API keys for programmatic access; JWT for UI sessions.",
+      "rate_limiting": "429 Too Many Requests with Retry-After header when limit is exceeded.",
+      "documentation": "OpenAPI 3.0 spec generated from code and served at /api/docs. Includes request/response schemas and example payloads for every endpoint."
+    },
+
+    "ui_ux_guidelines": {
+      "description": "Design and interaction principles that all frontend work must follow. The goal is a tool that feels fast, focused, and obvious to use.",
+      "principles": [
+        "Speed: every interaction should feel instant. Optimistic UI updates — show the result before the server confirms.",
+        "Focus: show only what the user needs for the current task. Progressive disclosure for advanced options.",
+        "Consistency: the same action always works the same way across the app.",
+        "Accessibility: every feature must be usable with a keyboard and by screen readers."
+      ],
+      "layout": {
+        "navigation": "Fixed left sidebar with collapsible project list, global dashboards, and settings. Top bar for global search and notifications.",
+        "content_area": "Full-width scrollable area. No nested scroll containers.",
+        "modals": "Used sparingly — only for destructive confirmations and multi-step flows. Prefer inline editing and side panels.",
+        "side_panel": "Slide-in panel from the right for task detail view, keeping the board visible in the background."
+      },
+      "typography": "Inter or system-ui. 14px body, 12px secondary text, 20–24px headings. Line height 1.5.",
+      "colour_system": "Semantic colour tokens for status (success green, warning amber, danger red, info blue). Neutral greys for UI chrome. One brand accent colour.",
+      "empty_states": "Every list or board view must have an illustrated empty state with a clear call-to-action when there is no data.",
+      "loading_states": "Skeleton loaders for all data-fetching views. Spinner only for actions (button submits, file uploads).",
+      "error_states": "Inline error messages for form validation. Toast notifications for async action failures. Full-page error boundary for unexpected crashes.",
+      "responsive": "Desktop-first (1280px+). Fully usable at 768px (tablet). Core views functional at 375px (mobile).",
+      "accessibility": {
+        "standard": "WCAG 2.1 AA",
+        "requirements": [
+          "All interactive elements reachable by keyboard with visible focus ring",
+          "All images and icons have alt text or aria-label",
+          "Colour contrast ratio ≥ 4.5:1 for normal text, ≥ 3:1 for large text",
+          "Screen reader tested with VoiceOver (macOS) and NVDA (Windows)"
+        ]
+      },
+      "performance": {
+        "targets": "First Contentful Paint < 1.5s. Time to Interactive < 3s. Core Web Vitals green.",
+        "techniques": ["Code splitting per route", "Lazy loading of off-screen components", "Image optimisation via CDN", "API response caching with React Query"]
+      }
+    },
+
+    "constraints": {
+      "description": "Decisions that must be resolved and confirmed in writing before development begins. Each one has downstream implications on architecture, cost, or timeline.",
+      "items": [
+        {
+          "id": 1,
+          "question": "Backend framework: Node.js + Express or Django (Python)?",
+          "implication": "Affects team hiring, ORM choice, job queue library, and deployment configuration."
+        },
+        {
+          "id": 2,
+          "question": "Gantt library: Frappe Gantt (open source, MIT) or DHTMLX Gantt (commercial licence required)?",
+          "implication": "DHTMLX has more features but adds licensing cost and vendor dependency. Frappe is free but may require custom extension work."
+        },
+        {
+          "id": 3,
+          "question": "Multi-tenancy model: shared database with org_id row scoping, or separate schema per organisation?",
+          "implication": "Row scoping is simpler to build and operate. Schema-per-org provides stronger isolation and is easier to comply with data residency requirements, but adds operational complexity."
+        },
+        {
+          "id": 4,
+          "question": "PDF export: templated with PDFKit/jsPDF, or HTML-to-PDF with Puppeteer/wkhtmltopdf?",
+          "implication": "HTML-to-PDF produces better-looking output but is slower and resource-intensive. Template-based is faster but requires more design work."
+        },
+        {
+          "id": 5,
+          "question": "Compliance scope: GDPR only, or also SOC 2 Type II and/or HIPAA?",
+          "implication": "SOC 2 requires formal controls documentation, annual audits, and specific technical controls. HIPAA requires a BAA with all vendors and additional safeguards. Both significantly expand scope."
+        },
+        {
+          "id": 6,
+          "question": "AI provider: Anthropic Claude API or OpenAI?",
+          "implication": "Affects cost per request, latency, capability, and data processing agreements."
+        },
+        {
+          "id": 7,
+          "question": "Pricing model: per-seat subscription, flat monthly, or freemium with paid tiers?",
+          "implication": "Affects the entitlements system, billing integration (Stripe), and which features are gated."
+        }
+      ]
+    },
+
+    "deliverables": {
+      "description": "Everything that must be produced and handed over at the end of the project. All items are required — none are optional.",
+      "items": [
+        "Full source code in a monorepo structure: /frontend, /backend, /docs, /infra",
+        "PostgreSQL migration scripts using the chosen ORM's migration tool",
+        "Seed data scripts for local development (sample org, users, projects, tasks)",
+        "OpenAPI 3.0 spec for all API endpoints, generated from code",
+        "README.md with prerequisites, local setup instructions, and environment variable documentation",
+        "Docker Compose file for running the full stack locally (frontend, backend, PostgreSQL, Redis)",
+        ".env.example file listing all required environment variables with descriptions",
+        "GitHub Actions CI pipeline: lint, test, and build on every pull request",
+        "Deployment runbook: step-by-step instructions for deploying to production",
+        "Basic load test results showing the app handles expected concurrent user load"
+      ]
+    }
+  }
+}
